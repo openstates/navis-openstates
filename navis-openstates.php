@@ -29,8 +29,10 @@ class Navis_OpenStates {
         // tinymce button to open modal
         
         // shortcode to render legislator
+        add_shortcode('legislator', array(&$this, 'legislator_shortcode'));
         
         // shortcode to render bill
+        add_shortcode('bill', array(&$this, 'bill_shortcode'));
         
         // include assets
         add_action( 'admin_print_scripts-post.php', 
@@ -48,17 +50,85 @@ class Navis_OpenStates {
             'admin_print_styles-post-new.php', 
             array( &$this, 'add_admin_stylesheet' ) 
         );
+        
+        // settings
+        add_action( 'admin_menu', array(&$this, 'add_options_page'));
+        
+        add_action( 'admin_init', array(&$this, 'settings_init'));
+        
+    }
+    
+    function fetch($url) {
+        $response = wp_remote_retrieve_body( wp_remote_get($url) );
+        if (empty($response)) {
+            return false;
+        }
+        return json_decode($response);
+    }
+    
+    function get_alignment($align) {
+        $classnames = array(
+            'left'=>'alignleft',
+            'right'=>'alignright'
+        );
+        if (array_key_exists($align, $classnames)) {
+            $classname = $classnames[$align];
+        } else {
+            $classname = 'alignleft';
+        }
+        return $classname;
     }
     
     function bill_shortcode() {
         
     }
     
-    function legislator_shortcode() {
+    function legislator_shortcode($atts) {
+        extract(shortcode_atts(array(
+            'leg_id' => null,
+            'align' => 'left'
+        ), $atts));
+        $apikey = get_option('sunlight_apikey');
+        //if (!$leg_id) return;
+        //if (!$apikey) return;
         
+        $qs = http_build_query(array( 'apikey' => $apikey ));
+        $url = "http://openstates.org/api/v1/legislators/$leg_id/?" . $qs;
+        $data = $this->fetch($url);
+        
+        $classname = $this->get_alignment($align);
+        $displayname = $data->full_name . " ({$data->party[0]})";
+        $committees = $this->get_committees($data);
+        
+        $html  = "<div class=\"openstates-module legislator $classname\">";
+        $html .=	"<h2 class=\"module-title\">Legislator Info</h2>";
+        $html .=	"<div class=\"box-wrapper\">";
+        $html .=		"<h3 class=\"name\">$displayname</h3>";
+        $html .=		"<h4 class=\"district\">District {$data->district}</h4>";
+        if ($committees) {
+            $html .=		"<h5 class=\"info-hed\">Committees</h5>";
+            $html .=		"<p>". implode(', ', $committees) . "</p>";
+        }
+        $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
+        $html .=	"</div>";
+        $html .= "</div>";
+        
+        return $html;
     }
     
-    function register_admin_scripts() {
+    function get_committees($leg_data) {
+        $committees = array();
+        foreach((array)$leg_data->roles as $role) {
+            if ($role->type == 'committee member') {
+                $committees[] = $role->committee;
+            }
+        }
+        return $committees;
+    }
+    
+    function add_admin_stylesheet() {}
+    
+    function register_admin_scripts($atts) {
         $js = array(
             'underscore' => plugins_url('js/underscore-min.js', __FILE__),
             'backbone' => plugins_url('js/backbone-min.js', __FILE__),
@@ -77,6 +147,41 @@ class Navis_OpenStates {
         wp_enqueue_script( 'openstates-bills', $js['openstates-bills'], 
             array('underscore', 'backbone', 'jquery', 'backbone-modelbinding'), '0.1');        
     }
+    
+    function add_options_page() {
+        add_options_page('OpenStates', 'OpenStates', 'manage_options', 
+                        'openstates', array(&$this, 'render_options_page'));
+    }
+    
+    function render_options_page() { ?>
+        <h2>OpenStates Options</h2>
+        <form action="options.php" method="post">
+            
+            <?php settings_fields('openstates'); ?>
+            <?php do_settings_sections('openstates'); ?>
+            
+            <p><input name="Submit" class="button-primary" type="submit" value="<?php esc_attr_e('Save Changes'); ?>" /></p>
+            </form>
+        <?php
+    }
+    
+    function settings_init() {
+        add_settings_section( 'openstates', '',
+            array(&$this, 'settings_section'), 'openstates');
+        
+        add_settings_field('sunlight_apikey', 'Sunlight API Key',
+            array(&$this, 'apikey_field'), 'openstates', 'openstates');
+        register_setting('openstates', 'sunlight_apikey');
+    }
+    
+    function settings_section() {}
+    
+    function apikey_field() {
+        $option = get_option('sunlight_apikey', ''); ?>
+        <input type="text" value="<?php echo esc_attr($option); ?>" name="sunlight_apikey">
+        <?php
+    }
+    
 }
 
 new Navis_OpenStates;
