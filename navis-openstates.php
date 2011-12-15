@@ -34,6 +34,9 @@ class Navis_OpenStates {
         // shortcode to render bill
         add_shortcode('bill', array(&$this, 'bill_shortcode'));
         
+        // buttons
+        add_action('init', array(&$this, 'register_tinymce_filters'));
+        
         // include assets
         add_action( 'admin_print_scripts-post.php', 
             array( &$this, 'register_admin_scripts' )
@@ -56,6 +59,83 @@ class Navis_OpenStates {
         
         add_action( 'admin_init', array(&$this, 'settings_init'));
         
+        // ajax
+        add_action('wp_ajax_get_legislator_form', array(&$this, 'get_legislator_form'));
+        add_action('wp_ajax_get_bill_form', array(&$this, 'get_bill_form'));
+        
+        // include the api key
+        add_action('admin_head', array(&$this, 'insert_api_key'));
+        
+    }
+    
+    function insert_api_key() { ?>
+        <script>
+        window.sunlight_apikey = "<?php echo get_option('sunlight_apikey'); ?>";
+        </script><?php
+    }
+    
+    function register_tinymce_filters() {
+        add_filter('mce_external_plugins', 
+            array(&$this, 'add_tinymce_plugin')
+        );
+        add_filter('mce_buttons', 
+            array(&$this, 'register_button')
+        );
+    }
+    
+    function add_tinymce_plugin($plugin_array) {
+        $plugin_array['openstates_legislators'] = plugins_url(
+            'js/tinymce/legislators-tinymce.js', __FILE__);
+        $plugin_array['openstates_bills'] = plugins_url(
+            'js/tinymce/bills-tinymce.js', __FILE__);
+        return $plugin_array;
+    }
+    
+    function register_button($buttons) {
+        array_push($buttons, '|', "related_content");
+        return $buttons;
+    }
+    
+    function get_legislator_form() { ?>
+        <div id="legislator-search">
+            <div class="form">
+                <form class="search">
+                    <p>
+                        <label for="state">State</label>
+                        <input type="text" name="state" placeholder="Two letters only">
+                    </p>
+                    <p>
+                        <label>Name</label>
+                        <input type="text" name="first_name">
+                        <input type="text" name="last_name">
+                    </p>
+                    <p>
+                        <select name="chamber">
+                            <option value="">Chamber</option>
+                            <option value="upper">Upper</option>
+                            <option value="lower">Lower</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="district">District</label>
+                        <input type="text" name="district">
+                    </p>
+                    <p>
+                        <label for="party">Party</label>
+                        <input type="text" name="party">
+                    </p>
+                    <p><input type="submit" value="Search"></p>
+                </form>
+            </div>
+            <div class="results"></div>
+        </div>
+        <?php
+        die();
+    }
+    
+    function get_bill_form() {
+        
+        die();
     }
     
     function fetch($url) {

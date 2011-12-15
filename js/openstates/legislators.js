@@ -73,7 +73,9 @@
         
         initialize: function(options) {
             this.apikey = options.apikey;
-            this.collection = new LegislatorList([], options);
+            this.editor = options.editor;
+            
+            this.collection = new LegislatorList;
             this.model = new Query();
             Backbone.ModelBinding.bind(this);
             return this;
