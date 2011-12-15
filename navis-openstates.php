@@ -63,7 +63,7 @@ class Navis_OpenStates {
         if (empty($response)) {
             return false;
         }
-        return json_decode($response);
+        return json_decode($response, 'true');
     }
     
     function get_alignment($align) {
@@ -80,10 +80,10 @@ class Navis_OpenStates {
     }
     
     function get_latest_action($bill) {
-        if ($bill->actions) {
+        if ($bill['actions']) {
             $action = array(
-                'action' => $bill->actions[0]->action,
-                'date' => date('M j, Y', strtotime($bill->actions[0]->date))
+                'action' => $bill['actions'][0]['action'],
+                'date' => date('M j, Y', strtotime($bill['actions'][0]['date']))
             );
             return $action;            
         }
@@ -109,15 +109,15 @@ class Navis_OpenStates {
         }
         
         $align = $this->get_alignment($align);
-        $morelink = $bill->versions[0]->url;
+        $morelink = $bill['versions'][0]['url'];
         $last_action = $this->get_latest_action($bill);
         
         $html  = "<div class=\"openstates-module bill-tracker $align\">";
         $html .=	"<h2 class=\"module-title\">Bill Tracker</h2>";
         $html .=	"<div class=\"box-wrapper\">";
 
-        $html .=		"<h5 class=\"info-hed\">{$bill->bill_id}</h5>";
-        $html .=		"<p>{$bill->title}</p>";
+        $html .=		"<h5 class=\"info-hed\">{$bill['bill_id']}</h5>";
+        $html .=		"<p>{$bill['title']}</p>";
         $html .=		"<h5 class=\"info-hed\">Latest Action</h5>";
         $html .=        "<p>{$last_action['date']}: {$last_action['action']}</p>";
         $html .=		"<p><a class=\"jump-link\" href=\"$morelink\">More info &raquo;</a></p>";
@@ -143,18 +143,22 @@ class Navis_OpenStates {
         $member = $this->fetch($url);
         
         $classname = $this->get_alignment($align);
-        $displayname = $member->full_name . " ({$member->party[0]})";
+        $title = $member['chamber'] == 'upper' ? 'Sen. ' : 'Rep. ';
+        $displayname = $title . $member['full_name'] . " ({$member['party'][0]})";
         $committees = $this->get_committees($member);
         
         $html  = "<div class=\"openstates-module legislator $classname\">";
         $html .=	"<h2 class=\"module-title\">Legislator Info</h2>";
         $html .=	"<div class=\"box-wrapper\">";
         $html .=		"<h3 class=\"name\">$displayname</h3>";
-        $html .=		"<h4 class=\"district\">District {$member->district}</h4>";
+        $html .=		"<h4 class=\"district\">District {$member['district']}</h4>";
         if ($committees) {
             $html .=		"<h5 class=\"info-hed\">Committees</h5>";
             $html .=		"<p>". implode(', ', $committees) . "</p>";
         }
+        $html .=        "<h5 class=\"info-hed\">Contact</h5>";
+        $html .=        "<p>{$member['+address']}<br>";
+        $html .=        "{$member['+phone_number']}</p>";
         $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
         $html .=	"</div>";
         $html .= "</div>";
@@ -164,9 +168,9 @@ class Navis_OpenStates {
     
     function get_committees($leg_data) {
         $committees = array();
-        foreach((array)$leg_data->roles as $role) {
-            if ($role->type == 'committee member') {
-                $committees[] = $role->committee;
+        foreach((array)$leg_data['roles'] as $role) {
+            if ($role['type'] == 'committee member') {
+                $committees[] = $role['committee'];
             }
         }
         return $committees;
