@@ -10,7 +10,7 @@
          */
         init : function(ed, url) {
             // Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceExample');
-            ed.addCommand('openstates', function() {
+            ed.addCommand('openstates_legislators', function() {
                 function getForm() {
                     var data = {
                         action: 'get_legislator_form'
@@ -23,46 +23,33 @@
                                 modal: true,
                                 dialogClass: 'wp-dialog',
                                 width: 550,
-                                buttons: {
-                                    "Save": function() {
-                                        window.legislator_search.save();
-                                    },
-                                    
-                                    "Insert Left": function() {
-                                        window.legislator_search.insertShortcode('left');
-                                        window.related_content_dialog.dialog('close');
-                                    },
-                                    "Insert Right": function() {
-                                        window.legislator_search.insertShortcode('right');
-                                        window.related_content_dialog.dialog('close');
-                                    }
-                                }
                             });
                         window.legislator_search_loaded = true;
                         window.legislator_search = new LegislatorSearch({
                             editor: ed,
-                            apikey: window.sunlight_apikey
+                            apikey: window.sunlight_apikey,
+                            el: resp
                         });
                     });
                 }
                 
                 if (window.legislator_search_loaded) {
-                    window.legislator_search.dialog('open');
+                    window.legislator_search_dialog.dialog('open');
                 } else {
-                    getRelatedForm();
+                    getForm();
                 }
             });
 
             // Register example button
-            ed.addButton('related_content', {
-                title : 'Related Content',
-                cmd : 'related_content',
-                image : url + '/related-content-button.png'
+            ed.addButton('openstates_legislators', {
+                title : 'OpenStates: Legislators',
+                cmd : 'openstates_legislators',
+                image : url + '/button.png'
             });
 
             // Add a node change handler, selects the button in the UI when a image is selected
             ed.onNodeChange.add(function(ed, cm, n) {
-                cm.setActive('related_content', n.nodeName == 'IMG');
+                cm.setActive('openstates_legislators', n.nodeName == 'IMG');
             });
         },
 
@@ -88,7 +75,7 @@
          */
         getInfo : function() {
             return {
-                longname : 'Navis Related Content Plugin',
+                longname : 'Navis OpenStates Legislators Plugin',
                 author : 'Chris Amico',
                 authorurl : 'http://stateimpact.npr.org/',
                 infourl : 'http://stateimpact.npr.org/',
@@ -98,6 +85,6 @@
     });
 
     // Register plugin
-    tinymce.PluginManager.add('openstates', tinymce.plugins.RelatedContent);
+    tinymce.PluginManager.add('openstates', tinymce.plugins.OpenStatesLegislators);
 })(window.jQuery);
 

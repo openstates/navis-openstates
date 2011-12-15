@@ -71,14 +71,23 @@
     
     window.LegislatorSearch = Backbone.View.extend({
         
+        events: {
+            'submit form' : 'doSearch'
+        },
+        
         initialize: function(options) {
             this.apikey = options.apikey;
             this.editor = options.editor;
             
-            this.collection = new LegislatorList;
+            this.collection = new LegislatorList([], options);
             this.model = new Query();
             Backbone.ModelBinding.bind(this);
             return this;
+        },
+        
+        doSearch: function(e) {
+            e.preventDefault();
+            return this.search();
         },
         
         search: function(query) {

@@ -99,19 +99,22 @@ class Navis_OpenStates {
     function get_legislator_form() { ?>
         <div id="legislator-search">
             <div class="form">
-                <form class="search">
+                <form class="legislator-search">
                     <p>
                         <label for="state">State</label>
                         <input type="text" name="state" placeholder="Two letters only">
                     </p>
                     <p>
-                        <label>Name</label>
+                        <label>First Name</label>
                         <input type="text" name="first_name">
+                        <br>
+                        <label>Last Name</label>
                         <input type="text" name="last_name">
                     </p>
                     <p>
+                        <label for="chamber">Chamber</label>
                         <select name="chamber">
-                            <option value="">Chamber</option>
+                            <option value="">---</option>
                             <option value="upper">Upper</option>
                             <option value="lower">Lower</option>
                         </select>
@@ -124,7 +127,7 @@ class Navis_OpenStates {
                         <label for="party">Party</label>
                         <input type="text" name="party">
                     </p>
-                    <p><input type="submit" value="Search"></p>
+                    <p><input type="submit" class="search button" value="Search"></p>
                 </form>
             </div>
             <div class="results"></div>
@@ -257,7 +260,13 @@ class Navis_OpenStates {
         return $committees;
     }
     
-    function add_admin_stylesheet() {}
+    function add_admin_stylesheet() {
+        $css = plugins_url('css/openstates.css', __FILE__);
+        wp_enqueue_style('wp-jquery-ui-dialog');
+        wp_enqueue_style(
+            'openstates', $css, array(), '0.1'
+        );
+    }
     
     function register_admin_scripts($atts) {
         $js = array(

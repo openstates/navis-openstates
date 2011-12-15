@@ -1,0 +1,14 @@
+#legislator-search {
+    padding: .5em;
+}
+
+#legislator-search div.form {
+    float: left;
+    width: 50%;
+    border-right: 1px solid #ddd;
+}
+
+#legislator-search div.results {
+    float: left;
+    width: 50%;
+}
