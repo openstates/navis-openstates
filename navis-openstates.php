@@ -116,11 +116,11 @@ class Navis_OpenStates {
         $html .=	"<h2 class=\"module-title\">Bill Tracker</h2>";
         $html .=	"<div class=\"box-wrapper\">";
 
-        $html .=		"<h5 class=\"info-hed\">{$bill['bill_id']}</h5>";
+        $html .=		"<h5 class=\"info-hed\"><a href=\"$morelink\">{$bill['bill_id']}</a></h5>";
         $html .=		"<p>{$bill['title']}</p>";
         $html .=		"<h5 class=\"info-hed\">Latest Action</h5>";
         $html .=        "<p>{$last_action['date']}: {$last_action['action']}</p>";
-        $html .=		"<p><a class=\"jump-link\" href=\"$morelink\">More info &raquo;</a></p>";
+        $html .=		"<p><a class=\"jump-link\" href=\"$morelink\">Read the bill &raquo;</a></p>";
 
         $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
         $html .=	"</div>";
@@ -150,7 +150,7 @@ class Navis_OpenStates {
         $html  = "<div class=\"openstates-module legislator $classname\">";
         $html .=	"<h2 class=\"module-title\">Legislator Info</h2>";
         $html .=	"<div class=\"box-wrapper\">";
-        $html .=		"<h3 class=\"name\">$displayname</h3>";
+        $html .=		"<h3 class=\"name\"><a href=\"{$member['url']}\">$displayname</a></h3>";
         $html .=		"<h4 class=\"district\">District {$member['district']}</h4>";
         if ($committees) {
             $html .=		"<h5 class=\"info-hed\">Committees</h5>";
@@ -159,6 +159,7 @@ class Navis_OpenStates {
         $html .=        "<h5 class=\"info-hed\">Contact</h5>";
         $html .=        "<p>{$member['+address']}<br>";
         $html .=        "{$member['+phone_number']}</p>";
+        $html .=		"<p><a class=\"jump-link\" href=\"{$member['url']}\">More &raquo;</a></p>";
         $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
         $html .=	"</div>";
         $html .= "</div>";
