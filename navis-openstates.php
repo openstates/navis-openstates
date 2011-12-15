@@ -79,8 +79,54 @@ class Navis_OpenStates {
         return $classname;
     }
     
-    function bill_shortcode() {
+    function get_latest_action($bill) {
+        if ($bill->actions) {
+            $action = array(
+                'action' => $bill->actions[0]->action,
+                'date' => date('M j, Y', strtotime($bill->actions[0]->date))
+            );
+            return $action;            
+        }
+    }
+    
+    function bill_shortcode($atts) {
+        extract(shortcode_atts(array(
+            'state' => null,
+            'session' => null,
+            'id' => null,
+            'align' => 'left'
+        ), $atts));
+        $apikey = get_option('sunlight_apikey');
         
+        if (!($state && $session && $id && $apikey)) return;
+        
+        $qs = http_build_query(array( 'apikey' => $apikey ));
+        $url = "http://openstates.org/api/v1/bills/$state/$session/$id/?" . $qs;
+        $bill = $this->fetch($url);
+        if (!$bill) {
+            error_log('No data returned from '.$url);
+            return;
+        }
+        
+        $align = $this->get_alignment($align);
+        $morelink = $bill->versions[0]->url;
+        $last_action = $this->get_latest_action($bill);
+        
+        $html  = "<div class=\"openstates-module bill-tracker $align\">";
+        $html .=	"<h2 class=\"module-title\">Bill Tracker</h2>";
+        $html .=	"<div class=\"box-wrapper\">";
+
+        $html .=		"<h5 class=\"info-hed\">{$bill->bill_id}</h5>";
+        $html .=		"<p>{$bill->title}</p>";
+        $html .=		"<h5 class=\"info-hed\">Latest Action</h5>";
+        $html .=        "<p>{$last_action['date']}: {$last_action['action']}</p>";
+        $html .=		"<p><a class=\"jump-link\" href=\"$morelink\">More info &raquo;</a></p>";
+
+        $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
+        $html .=	"</div>";
+        $html .= "</div>";
+        
+        return $html;
     }
     
     function legislator_shortcode($atts) {
@@ -94,17 +140,17 @@ class Navis_OpenStates {
         
         $qs = http_build_query(array( 'apikey' => $apikey ));
         $url = "http://openstates.org/api/v1/legislators/$leg_id/?" . $qs;
-        $data = $this->fetch($url);
+        $member = $this->fetch($url);
         
         $classname = $this->get_alignment($align);
-        $displayname = $data->full_name . " ({$data->party[0]})";
-        $committees = $this->get_committees($data);
+        $displayname = $member->full_name . " ({$member->party[0]})";
+        $committees = $this->get_committees($member);
         
         $html  = "<div class=\"openstates-module legislator $classname\">";
         $html .=	"<h2 class=\"module-title\">Legislator Info</h2>";
         $html .=	"<div class=\"box-wrapper\">";
         $html .=		"<h3 class=\"name\">$displayname</h3>";
-        $html .=		"<h4 class=\"district\">District {$data->district}</h4>";
+        $html .=		"<h4 class=\"district\">District {$member->district}</h4>";
         if ($committees) {
             $html .=		"<h5 class=\"info-hed\">Committees</h5>";
             $html .=		"<p>". implode(', ', $committees) . "</p>";
