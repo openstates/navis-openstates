@@ -4,11 +4,19 @@
 
 #legislator-search div.form {
     float: left;
-    width: 50%;
-    border-right: 1px solid #ddd;
+    width: 49%;
 }
 
 #legislator-search div.results {
     float: left;
-    width: 50%;
+    width: 48%;
+    border-left: 1px solid #ddd;
+    padding: .5em;
+    height: 200px;
+    overflow-y: auto;
+}
+
+#legislator-search div.legislator,
+#legislator-search div.bill {
+    border-bottom: 1px solid #ddd;
 }

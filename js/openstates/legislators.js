@@ -1,8 +1,8 @@
 (function($) {
     
     var TEMPLATE = '<h4><%= full_name %></h4>' +
-                   '<p><%= state %> | <%= chamber %></p>' +
-                   '<p><%= party %>, <%= district %></p>' +
+                   '<p>State: <%= state.toUpperCase() %> | Chamber: <%= chamber %></p>' +
+                   '<p><%= party %> Party, <%= district %></p>' +
                    '<p><input type="button" class="button left" value="Insert left">' +
                    '<input type="button" class="button right" value="Insert right">';
     
@@ -10,15 +10,15 @@
     var Legislator = Backbone.Model.extend({
         
         defaults: {
-            state      : null,
-            full_name  : null,
-            first_name : null,
-            last_name  : null,
-            chamber    : null,
-            term       : null,
-            district   : null,
-            party      : null,
-            leg_id     : null
+            state      : '',
+            full_name  : '',
+            first_name : '',
+            last_name  : '',
+            chamber    : '',
+            term       : '',
+            district   : '',
+            party      : '',
+            leg_id     : ''
         },
         
         initialize: function(attributes, options) {
@@ -29,7 +29,14 @@
     
     // this exists to hold search params
     var Query = Backbone.Model.extend({
-        
+        defaults: {
+            state      : '',
+            first_name : '',
+            last_name  : '',
+            chamber    : '',
+            district   : '',
+            party      : ''
+        }
     });
     
     // collections
@@ -56,6 +63,12 @@
     // views
     var LegislatorView = Backbone.View.extend({
         
+        className: "legislator result",
+        events: {
+            'click input.left'  : 'insertLeft',
+            'click input.right' : 'insertRight'
+        },
+        
         template: _.template(TEMPLATE),
         
         initialize: function(options) {
@@ -66,22 +79,42 @@
         render: function() {
             $(this.el).html(this.template(this.model.toJSON()));
             return this;
-        }
+        },
+        
+        insertLeft: function(e) {
+            var shortcode = this.shortcode('left');
+            this.editor.execCommand('mceInsertContent', false, shortcode);
+        },
+        
+        insertRight: function(e) {
+            var shortcode = this.shortcode('right');
+            this.editor.execCommand('mceInsertContent', false, shortcode);
+        },
+        
+        shortcode: function(align) {
+            var leg_id = this.model.get('leg_id');
+            if (!leg_id) return "";
+            return "[legislator leg_id=" + leg_id + " align=" + align + "]";
+        },
+        
     });
     
     window.LegislatorSearch = Backbone.View.extend({
         
         events: {
-            'submit form' : 'doSearch'
+            'click input.search' : 'doSearch'
         },
         
         initialize: function(options) {
+            _.bindAll(this)
             this.apikey = options.apikey;
             this.editor = options.editor;
             
-            this.collection = new LegislatorList([], options);
             this.model = new Query();
-            Backbone.ModelBinding.bind(this);
+            this.collection = new LegislatorList([], options);
+            this.collection.bind('reset', this.render);
+                        
+            Backbone.ModelBinding.bind(this, { all: 'class' });
             return this;
         },
         
@@ -96,6 +129,32 @@
             this.collection.params = params;
             this.collection.fetch({ dataType: 'jsonp' });
             return this;
+        },
+        
+        render: function() {
+            var root = this.$('.results').empty();
+            var editor = this.editor;
+            if (this.collection.length === 0) {
+                root.text("No results");
+            } else {
+                this.collection.each(function(legislator) {
+                    legislator.view.editor = editor;
+                    root.append(legislator.view.el);
+                });
+                root.height(this.$('form').height());
+            }
+            return this;
+        },
+                
+        watchFields: function() {
+            var model = this.model;
+            for (var field in model.defaults) {
+                this.$('[name=' + field + ']').change(function(e) {
+                    var change = {};
+                    change[field] = this.val();
+                    model.set(change);
+                });
+            }
         }
     })
         

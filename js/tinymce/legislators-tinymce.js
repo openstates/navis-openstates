@@ -28,7 +28,7 @@
                         window.legislator_search = new LegislatorSearch({
                             editor: ed,
                             apikey: window.sunlight_apikey,
-                            el: resp
+                            el: window.legislator_search_dialog
                         });
                     });
                 }

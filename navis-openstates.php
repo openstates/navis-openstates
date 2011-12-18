@@ -102,18 +102,18 @@ class Navis_OpenStates {
                 <form class="legislator-search">
                     <p>
                         <label for="state">State</label>
-                        <input type="text" name="state" placeholder="Two letters only">
+                        <input type="text" class="state" name="state" placeholder="Two letters only">
                     </p>
                     <p>
                         <label>First Name</label>
-                        <input type="text" name="first_name">
+                        <input type="text" class="first_name" name="first_name">
                         <br>
                         <label>Last Name</label>
-                        <input type="text" name="last_name">
+                        <input type="text" class="last_name" name="last_name">
                     </p>
                     <p>
                         <label for="chamber">Chamber</label>
-                        <select name="chamber">
+                        <select name="chamber" class="chamber">
                             <option value="">---</option>
                             <option value="upper">Upper</option>
                             <option value="lower">Lower</option>
@@ -121,13 +121,13 @@ class Navis_OpenStates {
                     </p>
                     <p>
                         <label for="district">District</label>
-                        <input type="text" name="district">
+                        <input type="text" class="district" name="district">
                     </p>
                     <p>
                         <label for="party">Party</label>
-                        <input type="text" name="party">
+                        <input type="text" class="party" name="party">
                     </p>
-                    <p><input type="submit" class="search button" value="Search"></p>
+                    <p><input type="button" class="search button" value="Search"></p>
                 </form>
             </div>
             <div class="results"></div>
