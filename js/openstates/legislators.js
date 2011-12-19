@@ -96,7 +96,7 @@
         shortcode: function(align) {
             var leg_id = this.model.get('leg_id');
             if (!leg_id) return "";
-            return "[legislator leg_id=" + leg_id + " align=" + align + "]";
+            return "\n[legislator leg_id=" + leg_id + " align=" + align + "]\n";
         },
         
     });

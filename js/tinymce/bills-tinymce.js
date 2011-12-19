@@ -44,7 +44,7 @@
             ed.addButton('openstates_bills', {
                 title : 'OpenStates: Bills',
                 cmd : 'openstates_bills',
-                image : url + '/bills.png'
+                image : url + '/admin-bill-button.png'
             });
 
             // Add a node change handler, selects the button in the UI when a image is selected

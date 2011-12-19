@@ -44,7 +44,7 @@
             ed.addButton('openstates_legislators', {
                 title : 'OpenStates: Legislators',
                 cmd : 'openstates_legislators',
-                image : url + '/legislators.png'
+                image : url + '/admin-legislator-button.png'
             });
 
             // Add a node change handler, selects the button in the UI when a image is selected
