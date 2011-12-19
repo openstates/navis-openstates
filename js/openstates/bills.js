@@ -83,10 +83,10 @@
         shortcode: function(align) {
             var bill_id = this.model.get('bill_id');
             if (!bill_id) return "";
-            return '\n[bill id="' + bill_id + '"' +
+            return '<p>[bill id="' + bill_id + '"' +
                    ' state=' + this.model.get('state') +
                    ' session="' + this.model.get('session') + '"' +
-                   ' align=' + align + ']\n';
+                   ' align=' + align + ']</p>';
         },
         
     });
