@@ -1,4 +1,5 @@
-#legislator-search {
+#legislator-search,
+#bill-search {
     padding: .5em;
 }
 
@@ -19,4 +20,16 @@
 #legislator-search div.legislator,
 #legislator-search div.bill {
     border-bottom: 1px solid #ddd;
+}
+
+#bill-search div.form {
+    width: 100%;
+}
+#bill-search div.results {
+    width: 100%;
+    overflow-y: auto;
+}
+
+div.openstates div.results div.result.selected {
+    background-color: #ffb;
 }

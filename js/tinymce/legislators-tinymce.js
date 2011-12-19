@@ -1,5 +1,5 @@
 (function($) {
-    tinymce.create('tinymce.plugins.RelatedContent', {
+    tinymce.create('tinymce.plugins.OpenStatesLegislators', {
         /**
          * Initializes the plugin, this will be executed after the plugin has been created.
          * This call is done before the editor instance has finished it's initialization so use the onInit event
@@ -44,7 +44,7 @@
             ed.addButton('openstates_legislators', {
                 title : 'OpenStates: Legislators',
                 cmd : 'openstates_legislators',
-                image : url + '/button.png'
+                image : url + '/legislators.png'
             });
 
             // Add a node change handler, selects the button in the UI when a image is selected
@@ -85,6 +85,6 @@
     });
 
     // Register plugin
-    tinymce.PluginManager.add('openstates', tinymce.plugins.OpenStatesLegislators);
+    tinymce.PluginManager.add('openstates_legislators', tinymce.plugins.OpenStatesLegislators);
 })(window.jQuery);
 

@@ -84,11 +84,13 @@
         insertLeft: function(e) {
             var shortcode = this.shortcode('left');
             this.editor.execCommand('mceInsertContent', false, shortcode);
+            $(this.el).addClass('selected');
         },
         
         insertRight: function(e) {
             var shortcode = this.shortcode('right');
             this.editor.execCommand('mceInsertContent', false, shortcode);
+            $(this.el).addClass('selected');
         },
         
         shortcode: function(align) {
@@ -144,18 +146,7 @@
                 root.height(this.$('form').height());
             }
             return this;
-        },
-                
-        watchFields: function() {
-            var model = this.model;
-            for (var field in model.defaults) {
-                this.$('[name=' + field + ']').change(function(e) {
-                    var change = {};
-                    change[field] = this.val();
-                    model.set(change);
-                });
-            }
         }
-    })
+    });
         
 })(window.jQuery);

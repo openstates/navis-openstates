@@ -26,8 +26,7 @@
 class Navis_OpenStates {
     
     function __construct() {
-        // tinymce button to open modal
-        
+    
         // shortcode to render legislator
         add_shortcode('legislator', array(&$this, 'legislator_shortcode'));
         
@@ -76,14 +75,14 @@ class Navis_OpenStates {
     
     function register_tinymce_filters() {
         add_filter('mce_external_plugins', 
-            array(&$this, 'add_tinymce_plugin')
+            array(&$this, 'add_tinymce_plugins')
         );
         add_filter('mce_buttons', 
-            array(&$this, 'register_button')
+            array(&$this, 'register_buttons')
         );
     }
     
-    function add_tinymce_plugin($plugin_array) {
+    function add_tinymce_plugins($plugin_array) {
         $plugin_array['openstates_legislators'] = plugins_url(
             'js/tinymce/legislators-tinymce.js', __FILE__);
         $plugin_array['openstates_bills'] = plugins_url(
@@ -91,13 +90,32 @@ class Navis_OpenStates {
         return $plugin_array;
     }
     
-    function register_button($buttons) {
-        array_push($buttons, '|', "related_content");
+    function register_buttons($buttons) {
+        array_push($buttons, '|', "openstates_legislators", "openstates_bills");
         return $buttons;
     }
     
+    function get_bill_form() { ?>
+        <div id="bill-search" class="openstates">
+            <div class="form">
+                <form class="bill-search">
+                    <p>
+                        <label for="state">State</label>
+                        <input type="text" class="state" name="state" placeholder="Two letters only">
+                        <label for="q">Text search</label>
+                        <input type="text" class="q" name="q">
+                        <input type="button" class="button search" value="Search">
+                    </p>
+                </form>
+            </div>
+            <div class="results"></div>
+        </div>
+        <?php
+        die();
+    }
+    
     function get_legislator_form() { ?>
-        <div id="legislator-search">
+        <div id="legislator-search" class="openstates">
             <div class="form">
                 <form class="legislator-search">
                     <p>
@@ -135,12 +153,7 @@ class Navis_OpenStates {
         <?php
         die();
     }
-    
-    function get_bill_form() {
         
-        die();
-    }
-    
     function fetch($url) {
         $response = wp_remote_retrieve_body( wp_remote_get($url) );
         if (empty($response)) {
