@@ -252,9 +252,12 @@ class Navis_OpenStates {
             $html .=		"<h5 class=\"info-hed\">Committees</h5>";
             $html .=		"<p>". implode(', ', $committees) . "</p>";
         }
-        $html .=        "<h5 class=\"info-hed\">Contact</h5>";
-        $html .=        "<p>{$member['+address']}<br>";
-        $html .=        "{$member['+phone_number']}</p>";
+        if ($member['+address'] || $member['+phone_number']) {
+            $html .=        "<h5 class=\"info-hed\">Contact</h5>";
+            $html .=        "<p>{$member['+address']}<br>";
+            $html .=        "{$member['+phone_number']}</p>";
+        }
+        
         $html .=		"<p><a class=\"jump-link\" href=\"{$member['url']}\">More &raquo;</a></p>";
         $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
         $html .=	"</div>";
