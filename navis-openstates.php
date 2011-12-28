@@ -283,9 +283,10 @@ class Navis_OpenStates {
     
     function get_latest_action($bill) {
         if ($bill['actions']) {
+            $latest = array_pop($bill['actions']);
             $action = array(
-                'action' => $bill['actions'][0]['action'],
-                'date' => date('M j, Y', strtotime($bill['actions'][0]['date']))
+                'action' => $latest['action'],
+                'date' => date('M j, Y', strtotime($latest['date']))
             );
             return $action;            
         }
