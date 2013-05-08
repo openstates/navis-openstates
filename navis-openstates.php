@@ -316,17 +316,17 @@ class Navis_OpenStates {
         $last_action = $this->get_latest_action($bill);
         
         $html  = "<div class=\"openstates-module bill-tracker $align\">";
-        $html .=    "<h2 class=\"module-title\">Bill Tracker</h2>";
-        $html .=    "<div class=\"box-wrapper\">";
+        $html .=	"<h2 class=\"module-title\">Bill Tracker</h2>";
+        $html .=	"<div class=\"box-wrapper\">";
 
-        $html .=        "<h5 class=\"info-hed\"><a target=\"_blank\" href=\"$morelink\">{$bill['bill_id']}</a></h5>";
-        $html .=        "<p>{$bill['title']}</p>";
-        $html .=        "<h5 class=\"info-hed\">Latest Action</h5>";
+        $html .=		"<h5 class=\"info-hed\"><a target=\"_blank\" href=\"$morelink\">{$bill['bill_id']}</a></h5>";
+        $html .=		"<p>{$bill['title']}</p>";
+        $html .=		"<h5 class=\"info-hed\">Latest Action</h5>";
         $html .=        "<p>{$last_action['date']}: {$last_action['action']}</p>";
-        $html .=        "<p><a target=\"_blank\" class=\"jump-link\" href=\"$morelink\">Read the bill &raquo;</a></p>";
+        $html .=		"<p><a target=\"_blank\" class=\"jump-link\" href=\"$morelink\">Read the bill &raquo;</a></p>";
 
-        $html .=        "<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
-        $html .=    "</div>";
+        $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
+        $html .=	"</div>";
         $html .= "</div>";
         
         return $html;
@@ -351,13 +351,13 @@ class Navis_OpenStates {
         $committees = $this->get_committees($member);
         
         $html  = "<div class=\"openstates-module legislator $classname\">";
-        $html .=    "<h2 class=\"module-title\">Legislator Info</h2>";
-        $html .=    "<div class=\"box-wrapper\">";
-        $html .=        "<h3 class=\"name\"><a target=\"_blank\" href=\"{$member['url']}\">$displayname</a></h3>";
-        $html .=        "<h4 class=\"district\">District {$member['district']}</h4>";
+        $html .=	"<h2 class=\"module-title\">Legislator Info</h2>";
+        $html .=	"<div class=\"box-wrapper\">";
+        $html .=		"<h3 class=\"name\"><a target=\"_blank\" href=\"{$member['url']}\">$displayname</a></h3>";
+        $html .=		"<h4 class=\"district\">District {$member['district']}</h4>";
         if ($committees) {
-            $html .=        "<h5 class=\"info-hed\">Committees</h5>";
-            $html .=        "<p>". implode(', ', $committees) . "</p>";
+            $html .=		"<h5 class=\"info-hed\">Committees</h5>";
+            $html .=		"<p>". implode(', ', $committees) . "</p>";
         }
         if ($member['+address'] || $member['+phone_number']) {
             $html .=        "<h5 class=\"info-hed\">Contact</h5>";
@@ -365,9 +365,9 @@ class Navis_OpenStates {
             $html .=        "{$member['+phone_number']}</p>";
         }
         
-        $html .=        "<p><a target=\"_blank\" class=\"jump-link\" href=\"{$member['url']}\">More &raquo;</a></p>";
-        $html .=        "<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
-        $html .=    "</div>";
+        $html .=		"<p><a target=\"_blank\" class=\"jump-link\" href=\"{$member['url']}\">More &raquo;</a></p>";
+        $html .=		"<p class=\"source\">Source: <a href=\"http://openstates.org/\">Open States</a></p>";
+        $html .=	"</div>";
         $html .= "</div>";
         
         return $html;
@@ -393,22 +393,22 @@ class Navis_OpenStates {
     
     function register_admin_scripts($atts) {
         $js = array(
-            'underscore-old' => plugins_url('js/underscore-min.js', __FILE__),
-            'backbone-old' => plugins_url('js/backbone-min.js', __FILE__),
+            'underscore-related' => plugins_url('js/underscore-min.js', __FILE__),
+            'backbone-related' => plugins_url('js/backbone-min.js', __FILE__),
             'backbone-modelbinding' => plugins_url('js/backbone.modelbinding.min.js', __FILE__),
             'openstates-legislators' => plugins_url('js/openstates/legislators.js', __FILE__),
             'openstates-bills' => plugins_url('js/openstates/bills.js', __FILE__)
         );
 
-        wp_enqueue_script( 'underscore-old', $js['underscore-old']);
-        wp_enqueue_script( 'backbone-old', $js['backbone-old'],
-            array('underscore', 'jquery'));
+        wp_enqueue_script( 'underscore-related', $js['underscore-related']);
+        wp_enqueue_script( 'backbone-related', $js['backbone-related'],
+            array('underscore-related', 'jquery'));
         wp_enqueue_script( 'backbone-modelbinding', $js['backbone-modelbinding'],
-            array('underscore-old', 'backbone-old', 'jquery'));
+            array('underscore-related', 'backbone-related', 'jquery'));
         wp_enqueue_script( 'openstates-legislators', $js['openstates-legislators'], 
-            array('underscore-old', 'backbone-old', 'jquery', 'backbone-modelbinding'), '0.1');
+            array('underscore-related', 'backbone-related', 'jquery', 'backbone-modelbinding'), '0.1');
         wp_enqueue_script( 'openstates-bills', $js['openstates-bills'], 
-            array('underscore-old', 'backbone-old', 'jquery', 'backbone-modelbinding'), '0.1');        
+            array('underscore-related', 'backbone-related', 'jquery', 'backbone-modelbinding'), '0.1');        
     }
     
     function add_options_page() {
