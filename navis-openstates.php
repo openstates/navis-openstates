@@ -393,22 +393,22 @@ class Navis_OpenStates {
     
     function register_admin_scripts($atts) {
         $js = array(
-            'underscore' => plugins_url('js/underscore-min.js', __FILE__),
-            'backbone' => plugins_url('js/backbone-min.js', __FILE__),
+            'underscore-related' => plugins_url('js/underscore-min.js', __FILE__),
+            'backbone-related' => plugins_url('js/backbone-min.js', __FILE__),
             'backbone-modelbinding' => plugins_url('js/backbone.modelbinding.min.js', __FILE__),
             'openstates-legislators' => plugins_url('js/openstates/legislators.js', __FILE__),
             'openstates-bills' => plugins_url('js/openstates/bills.js', __FILE__)
         );
 
-        wp_enqueue_script( 'underscore', $js['underscore']);
-        wp_enqueue_script( 'backbone', $js['backbone'],
-            array('underscore', 'jquery'));
+        wp_enqueue_script( 'underscore-related', $js['underscore-related']);
+        wp_enqueue_script( 'backbone-related', $js['backbone-related'],
+            array('underscore-related', 'jquery'));
         wp_enqueue_script( 'backbone-modelbinding', $js['backbone-modelbinding'],
-            array('underscore', 'backbone', 'jquery'));
+            array('underscore-related', 'backbone-related', 'jquery'));
         wp_enqueue_script( 'openstates-legislators', $js['openstates-legislators'], 
-            array('underscore', 'backbone', 'jquery', 'backbone-modelbinding'), '0.1');
+            array('underscore-related', 'backbone-related', 'jquery', 'backbone-modelbinding'), '0.1');
         wp_enqueue_script( 'openstates-bills', $js['openstates-bills'], 
-            array('underscore', 'backbone', 'jquery', 'backbone-modelbinding'), '0.1');        
+            array('underscore-related', 'backbone-related', 'jquery', 'backbone-modelbinding'), '0.1');        
     }
     
     function add_options_page() {
